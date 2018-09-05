@@ -1,9 +1,14 @@
+package visao;
+
+import gerencia.ObterDados;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,13 +22,17 @@ public class Services extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*");
         
         String tipoReq = request.getHeader("tipo");
-        System.out.println("=============================== tipo : "+tipoReq);
+        identificarRequisicao(tipoReq, request, response);
+    }
+    
+    public void identificarRequisicao(String requisicao, HttpServletRequest request, HttpServletResponse response) throws IOException{
         
         PrintWriter out = response.getWriter();
         
         try {
             
-            switch(tipoReq){
+            switch(requisicao){
+                
                 case "aulas_turma":
                     buscarAulasTurma(request, response, out);
                     break;
@@ -38,34 +47,31 @@ public class Services extends HttpServlet {
             System.out.println(e.getMessage());
         }
     }
+
+    private void buscarAulasTurma(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException, JSONException {
+ 
+        String body = IOUtils.toString(request.getInputStream(), "UTF-8");
+        JSONObject js = new JSONObject(body);
+        
+        int ano = Integer.parseInt(js.getString("ano"));
+        int semestre = Integer.parseInt(js.getString("semestre"));
+        int idTurma = Integer.parseInt(js.getString("turma_id"));
+        
+        JSONArray array = ObterDados.getAulasTurma(ano, semestre, idTurma);
+        out.print(array);
+    }
     
     private void buscarTurmasAtivas(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws JSONException, IOException {
         
-        int ano = Integer.parseInt(request.getParameter("ano"));
-        int semestre = Integer.parseInt(request.getParameter("semestre"));
+        String body = IOUtils.toString(request.getInputStream(), "UTF-8");
+        JSONObject js = new JSONObject(body);
         
-        JSONObject jsonTipoProva = MontaJSON.getAulas();
-        out.print(jsonTipoProva);
-    }
-
-    private void buscarAulasTurma(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException, JSONException {
+        int ano = Integer.parseInt(js.getString("ano"));
+        int semestre = Integer.parseInt(js.getString("semestre"));
         
-//        int ano = Integer.parseInt(request.getParameter("ano"));
-//        int semestre = Integer.parseInt(request.getParameter("semestre"));
-//        int idTurma = Integer.parseInt(request.getParameter("turma_id"));
-//        
-//        System.out.println("=============================== ano : " + ano);
-
-//        String js = IOUtils.toString(request.getInputStream(), "UTF-8");
-//        JSONObject json = new JSONObject(js);
-//        String tipoProva = json.getString("tipoProva");
-//        JSONObject jsonProva = JsonProvaFactory.getProva(tipoProva);
-//        out.print(jsonProva);
-
-        JSONObject jsonTipoProva = MontaJSON.getAulas();
-        out.print(jsonTipoProva);
+        JSONArray array = ObterDados.getTurmasAtivas(ano, semestre);
+        out.print(array);
     }
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

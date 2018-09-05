@@ -1,3 +1,5 @@
+package dao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BuscaObjetos {
+public class AulaDao {
     
     public static JSONArray buscarAulasTurma(int ano, int semestre, int idTurma) throws SQLException, Exception{
         
@@ -36,7 +38,7 @@ public class BuscaObjetos {
                 JSONArray array = new JSONArray();
                 
                 while(resultSet.next()){
-                    array.put(gerarJSONAula(resultSet));
+                    array.put(gerarJSONAulas(resultSet));
                 }
                 
                 preparedStatement.close();
@@ -47,42 +49,40 @@ public class BuscaObjetos {
             return null;
     }
     
-    public static JSONObject gerarJSONAula(ResultSet resultSet){
+    public static JSONObject gerarJSONAulas(ResultSet resultSet){
         
         JSONObject json = new JSONObject();
         
         try {
             
-            json.put("aula", new JSONObject()
-                .put("id", resultSet.getString(1))
+            json.put("id_aula", resultSet.getString(1))
                 .put("dia", resultSet.getString(2))
                 .put("numero", resultSet.getString(3))
                 .put("turno", resultSet.getString(4))
                     
                 .put("alocacao", new JSONObject()
-                    .put("id", resultSet.getString(5))
-                     
+                    .put("id_alocacao", resultSet.getString(5))
+
                     .put("disciplina", new JSONObject()
-                        .put("id", resultSet.getString(7))
+                        .put("id_disciplina", resultSet.getString(6))
                         .put("sigla", resultSet.getString(7))  
                         )
-                        
+
                     .put("professor1", new JSONObject()
-                        .put("id", resultSet.getString(8))
-                        .put("nome", resultSet.getString(9))  
+                        .put("id_professor1", resultSet.getString(8))
+                        .put("nome_professor1", resultSet.getString(9))  
                         )
-                        
+
                     .put("professor2", new JSONObject()                       
-                        .put("id", resultSet.getString(10))
-                        .put("nome", resultSet.getString(11))  
+                        .put("id_professor2", resultSet.getString(10))
+                        .put("nome_professor2", resultSet.getString(11))  
                     )
-                )
-            );        
+                );        
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         } catch (JSONException ex) {
-            Logger.getLogger(BuscaObjetos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AulaDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
