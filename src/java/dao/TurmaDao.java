@@ -18,7 +18,7 @@ public class TurmaDao {
         
             if(conexao != null){
                 
-                String sql = "SELECT t.id, t.nome, t.ano, t.semestre, c.id, c.nome, c.qtPeriodos, c.nivel "
+                String sql = "SELECT t.id, t.nome, t.ano, t.semestre, c.qtPeriodos, c.nivel "
                         + "FROM turma t "
                         + "JOIN matriz_curricular m ON m.id = t.matriz_curricular_id "
                         + "JOIN curso c ON c.id = m.curso_id";
@@ -31,7 +31,7 @@ public class TurmaDao {
                 JSONArray array = new JSONArray();
                 
                 while(resultSet.next()){
-                    array.put(gerarJSONTurmasAtivas(resultSet));
+                    array.put(gerarJSONTurmas(resultSet));
                 }
                 
                 preparedStatement.close();
@@ -42,14 +42,20 @@ public class TurmaDao {
             return null;
     }
     
-    public static JSONObject gerarJSONTurmasAtivas(ResultSet resultSet){
+    public static JSONObject gerarJSONTurmas(ResultSet resultSet){
         
         JSONObject json = new JSONObject();
         
         try {
             
             json.put("id", resultSet.getString(1));
-            json.put("nome", resultSet.getString(2));      
+            json.put("nome", resultSet.getString(2));
+            json.put("ano", resultSet.getString(3));
+            json.put("semestre", resultSet.getString(4));
+            
+            json.put("curso", new JSONObject()
+                .put("qtPeriodos", resultSet.getString(5))
+                .put("nivel", resultSet.getString(6)));
             
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -57,6 +63,5 @@ public class TurmaDao {
             Logger.getLogger(TurmaDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return json;
-    }
-    
+    } 
 }
