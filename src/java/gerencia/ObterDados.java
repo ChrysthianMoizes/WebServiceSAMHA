@@ -1,6 +1,7 @@
 package gerencia;
 
 import dao.AulaDao;
+import dao.ProfessorDao;
 import dao.TurmaDao;
 import java.util.List;
 import org.json.JSONArray;
@@ -16,6 +17,28 @@ public class ObterDados {
             return null;
         }
     }
+    
+    public static JSONArray getAulasProfessor(int ano, int semestre, int idProfessor, String nome){
+            
+        try { 
+            return AulaDao.buscarAulasProfessor(ano, semestre, idProfessor, nome); 
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+    
+    public static String[] getProfessorPorEmail(String email){
+        
+        try {
+            return ProfessorDao.identificarProfessor(email);
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        
+        return null;
+    } 
     
     public static JSONArray getTurmasAtivas(int ano, int semestre){
             

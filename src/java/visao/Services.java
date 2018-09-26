@@ -40,6 +40,10 @@ public class Services extends HttpServlet {
                 case "turmas_ativas":
                     buscarTurmasAtivas(request, response, out);
                     break;
+                    
+                case "aulas_professor":
+                    buscarAulasProfessor(request, response, out);
+                    break;
             }
             
         }catch(Exception e){
@@ -59,6 +63,26 @@ public class Services extends HttpServlet {
         
         JSONArray array = ObterDados.getAulasTurma(ano, semestre, idTurma);
         out.print(array);
+    }
+    
+    private void buscarAulasProfessor(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException, JSONException {
+ 
+        String body = IOUtils.toString(request.getInputStream(), "UTF-8");
+        JSONObject js = new JSONObject(body);
+        
+        int ano = Integer.parseInt(js.getString("ano"));
+        int semestre = Integer.parseInt(js.getString("semestre"));
+        
+        String email = js.getString("email");
+        String[] dados = ObterDados.getProfessorPorEmail(email);
+        
+        int idProfessor = Integer.parseInt(dados[0]);
+        String nome = dados[1];
+        
+        if(dados != null){
+            JSONArray array = ObterDados.getAulasProfessor(ano, semestre, idProfessor, nome);
+            out.print(array);
+        }
     }
     
     private void buscarTurmasAtivas(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws JSONException, IOException {

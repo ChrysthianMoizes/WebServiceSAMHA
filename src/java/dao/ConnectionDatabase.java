@@ -19,7 +19,10 @@ public class ConnectionDatabase {
             
             String driveName = "com.mysql.jdbc.Driver";
             Class.forName(driveName);
-
+            //config servidor ifes
+            //172.16.32.30:3306
+            //samha
+            //Ifes2018!
             String serverName = "localhost";
             String dataBase = "samha";
             String url = "jdbc:mysql://" + serverName + "/" + dataBase;

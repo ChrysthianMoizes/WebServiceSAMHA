@@ -38,7 +38,7 @@ public class AulaDao {
                 JSONArray array = new JSONArray();
                 
                 while(resultSet.next()){
-                    array.put(gerarJSONAulas(resultSet));
+                    array.put(gerarJSONAulasTurma(resultSet));
                 }
                 
                 preparedStatement.close();
@@ -49,7 +49,7 @@ public class AulaDao {
             return null;
     }
     
-    public static JSONObject gerarJSONAulas(ResultSet resultSet){
+    public static JSONObject gerarJSONAulasTurma(ResultSet resultSet){
         
         JSONObject json = new JSONObject();
         
@@ -84,8 +84,73 @@ public class AulaDao {
         } catch (JSONException ex) {
             Logger.getLogger(AulaDao.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return json;
+    }
+    
+    public static JSONArray buscarAulasProfessor(int ano, int semestre, int idProfessor, String nome) throws SQLException, Exception{
         
+        Connection conexao = ConnectionDatabase.getConexao();
         
+            if(conexao != null){
+                
+                String sql = "SELECT a.dia, a.numero, a.turno, d.sigla, t.nome FROM aula a "
+                        + "JOIN oferta o ON o.id = a.oferta_id "
+                        + "JOIN turma t ON o.turma_id = t.id "
+                        + "JOIN alocacao al ON al.id = a.alocacao_id "
+                        + "JOIN disciplina d ON d.id = al.disciplina_id "
+                        + "JOIN servidor s ON s.id = al.professor1_id or s.id = al.professor2_id "
+                        + "WHERE o.ano = ? AND o.semestre = ? AND s.id = ?";
+                               
+                PreparedStatement preparedStatement;
+                preparedStatement = conexao.prepareStatement(sql);
+                preparedStatement.setInt(1, ano);
+                preparedStatement.setInt(2, semestre);
+                preparedStatement.setInt(3, idProfessor);
+                
+                ResultSet resultSet = preparedStatement.executeQuery();
+                
+                JSONArray array = new JSONArray();
+                JSONObject professor = new JSONObject().put("nome", nome);
+                array.put(professor);
+                
+                while(resultSet.next()){
+                    array.put(gerarJSONAulasProfessor(resultSet));
+                }
+                
+                preparedStatement.close();
+                conexao.close();
+                
+                return array;
+        }
+            return null;
+    }
+    
+    public static JSONObject gerarJSONAulasProfessor(ResultSet resultSet){
+        
+        JSONObject json = new JSONObject();
+        
+        try {
+            
+            json.put("dia", resultSet.getString(1))
+                .put("numero", resultSet.getString(2))
+                .put("turno", resultSet.getString(3))
+                    
+                .put("alocacao", new JSONObject()
+
+                    .put("disciplina", new JSONObject()
+                        .put("sigla", resultSet.getString(4))  
+                        )
+                ).put("oferta", new JSONObject()
+                    .put("turma", new JSONObject()
+                        .put("nome", resultSet.getString(5))
+                    )
+                );        
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } catch (JSONException ex) {
+            Logger.getLogger(AulaDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return json;
     }
     
