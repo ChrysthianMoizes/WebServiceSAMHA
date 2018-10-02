@@ -13,7 +13,7 @@ public class ProfessorDao {
         
             if(conexao != null){
                 
-                String sql = "SELECT s.id, s.nome FROM Servidor s WHERE s.email = ?";
+                String sql = "SELECT s.id, s.nome FROM servidor s WHERE s.email = ?";
                                
                 PreparedStatement preparedStatement;
                 preparedStatement = conexao.prepareStatement(sql);

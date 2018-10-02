@@ -5,8 +5,9 @@
         <group>
             <file>file:/D:/Projetos/WebServiceSAMHA/src/java/dao/AulaDao.java</file>
             <file>file:/D:/Projetos/WebServiceSAMHA/src/java/gerencia/ObterDados.java</file>
-            <file>file:/D:/Projetos/WebServiceSAMHA/src/java/dao/ConnectionDatabase.java</file>
+            <file>file:/D:/Projetos/WebServiceSAMHA/src/java/dao/ProfessorDao.java</file>
             <file>file:/D:/Projetos/WebServiceSAMHA/src/java/visao/Services.java</file>
+            <file>file:/D:/Projetos/WebServiceSAMHA/src/java/dao/ConnectionDatabase.java</file>
         </group>
     </open-files>
 </project-private>
