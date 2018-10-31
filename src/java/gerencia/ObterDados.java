@@ -37,7 +37,7 @@ public class ObterDados {
     public static JSONArray verificarAnoSemestreDisponivel(int ano, int semestre, JSONArray array){
         
         try {
-            FileReader file = new FileReader("C:\\Users\\chrys\\Desktop\\arquivo.txt");
+            FileReader file = new FileReader("/opt/tomcat/webapps/config.txt");
             BufferedReader bf = new BufferedReader(file);
             String linha = bf.readLine();
 
@@ -46,8 +46,13 @@ public class ObterDados {
             int anoArquivo = Integer.valueOf(vet[0]);
             int semestreArquivo = Integer.valueOf(vet[1]);
             
-            if(anoArquivo >= ano && semestreArquivo >= semestre)
+            if(anoArquivo > ano){
                 return array;
+            }else if(anoArquivo == ano){
+                if(semestreArquivo >= semestre){
+                    return array;
+                }
+            }
             
             return new JSONArray();
                  
